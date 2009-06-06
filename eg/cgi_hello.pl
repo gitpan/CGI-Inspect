@@ -2,7 +2,8 @@
 
 use strict;
 use lib '../lib';
-use CGI::Inspect qw( inspect );
+use CGI::Inspect;
+
 print "Content-type: text/html\n\n";
 
 my $x = 5;
@@ -20,9 +21,8 @@ sub print_hello {
     b => 2,
   };
   print "Hello...\n";
-  #inspect();
-  die "Death is so sad";
-  print "world!";
+  inspect();
+  print " world!";
 }
 
 print_page();
