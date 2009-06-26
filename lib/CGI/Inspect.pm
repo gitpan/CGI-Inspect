@@ -6,7 +6,7 @@ CGI::Inspect - Inspect and debug CGI apps with an in-browser UI
 
 =head1 SYNOPSIS
 
-  use CGI::Inspect;
+  use CGI::Inspect; # This exports inspect()
 
   print "Content-type: text/html\n\n";
 
@@ -40,8 +40,9 @@ use Continuity;
 use Continuity::RequestCallbacks;
 use base 'Exporter';
 our @EXPORT = qw( inspect );
+our @EXPORT_OK = qw( nodie );
 
-our $VERSION = '0.4';
+our $VERSION = '0.5';
 
 =head1 EXPORTED SUBS
 
@@ -67,11 +68,16 @@ sub inspect {
   print "<script>window.open('http://localhost:8080/','cgi-inspect');</script>\n";
   my $self = CGI::Inspect->new(@_);
   $self->start_inspecting;
-  print "<script>window.close('cgi-inspect');</script>\n";
 }
 
-# This might be cool, but we'll disable it for now.
-#$SIG{__DIE__} = \&inspect;
+# This might be cool, but we'll disable it for now. I mean... because it doesn't work.
+# sub import {
+  # my $class = shift;
+  # my $nodie = grep { $_ eq 'nodie' } @_;
+  # $SIG{__DIE__} = \&CGI::Inspect::inspect unless $nodie;
+  # $class->SUPER::import(@_);
+# }
+
 
 =head1 PLUGINS
 
@@ -274,7 +280,6 @@ sub main {
   $request->print("<script>window.close();</script>");
   Coro::Event::unloop();
   $request->print("Exiting...");
-  $request->print("<script>window.close();</script>");
   $request->end_request;
 }
 
